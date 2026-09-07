@@ -30,13 +30,19 @@
                     cursor: pointer;
                     transition: background 0.2s, transform 0.15s;
                     flex-shrink: 0;
+                    color: #fff !important;
                 }
 
                 .player-panel__skip-back svg,
                 .player-panel__skip-forward svg {
                     width: 1.4em;
                     height: 1.4em;
-                    fill: #fff;
+                    fill: #fff !important;
+                }
+
+                .player-panel__skip-back svg text,
+                .player-panel__skip-forward svg text {
+                    fill: #fff !important;
                 }
 
                 .player-panel__skip-back:hover,
@@ -48,13 +54,19 @@
                 .player-panel__skip-back.focus,
                 .player-panel__skip-forward.focus {
                     background: #fff;
+                    color: #000 !important;
                     transform: scale(1.15);
                     box-shadow: 0 0 0.5em rgba(255,255,255,0.5);
                 }
 
                 .player-panel__skip-back.focus svg,
                 .player-panel__skip-forward.focus svg {
-                    fill: #000;
+                    fill: #000 !important;
+                }
+
+                .player-panel__skip-back.focus svg text,
+                .player-panel__skip-forward.focus svg text {
+                    fill: #000 !important;
                 }
             </style>
         `);
