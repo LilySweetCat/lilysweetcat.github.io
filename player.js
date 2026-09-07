@@ -5,7 +5,7 @@
 
     Lampa.Manifest.plugins = {
         name: 'player-skip-buttons',
-        version: '1.2.0',
+        version: '1.3.0',
         description: 'Adds visible skip forward/backward buttons to the player panel'
     };
 
@@ -16,67 +16,65 @@
 
     waitForPlayer(function(){
 
-        Lampa.Template.add('player_skip_css', `
-            <style>
+        if(!document.getElementById('player-skip-css')){
+            let style = document.createElement('style');
+            style.id = 'player-skip-css';
+            style.textContent = `
                 .player-panel__skip-back,
                 .player-panel__skip-forward {
-                    width: 2.8em;
-                    height: 2.8em;
-                    border-radius: 50%;
-                    background: rgba(255,255,255,0.15);
-                    display: inline-flex;
-                    align-items: center;
-                    justify-content: center;
+                    width: 2.8em !important;
+                    height: 2.8em !important;
+                    border-radius: 50% !important;
+                    background: rgba(255,255,255,0.15) !important;
+                    display: inline-flex !important;
+                    align-items: center !important;
+                    justify-content: center !important;
                     cursor: pointer;
-                    transition: background 0.2s, transform 0.15s;
                     flex-shrink: 0;
                     color: #fff !important;
                 }
 
                 .player-panel__skip-back svg,
                 .player-panel__skip-forward svg {
-                    width: 1.4em;
-                    height: 1.4em;
+                    width: 1.4em !important;
+                    height: 1.4em !important;
                     fill: #fff !important;
                 }
 
+                .player-panel__skip-back svg path,
                 .player-panel__skip-back svg text,
+                .player-panel__skip-forward svg path,
                 .player-panel__skip-forward svg text {
                     fill: #fff !important;
                 }
 
                 .player-panel__skip-back:hover,
                 .player-panel__skip-forward:hover {
-                    background: rgba(255,255,255,0.3);
+                    background: rgba(255,255,255,0.3) !important;
                     transform: scale(1.1);
                 }
 
                 .player-panel__skip-back.focus,
                 .player-panel__skip-forward.focus {
-                    background: #fff;
+                    background: #fff !important;
                     color: #000 !important;
                     transform: scale(1.15);
-                    box-shadow: 0 0 0.5em rgba(255,255,255,0.5);
                 }
 
                 .player-panel__skip-back.focus svg,
-                .player-panel__skip-forward.focus svg {
-                    fill: #000 !important;
-                }
-
+                .player-panel__skip-forward.focus svg,
+                .player-panel__skip-back.focus svg path,
                 .player-panel__skip-back.focus svg text,
+                .player-panel__skip-forward.focus svg path,
                 .player-panel__skip-forward.focus svg text {
                     fill: #000 !important;
                 }
-            </style>
-        `);
+            `;
+            document.head.appendChild(style);
+        }
 
-        let css = document.createElement('div');
-        css.innerHTML = Lampa.Template.get('player_skip_css');
-        document.body.appendChild(css);
-
-        let iconBack = '<svg viewBox="0 0 24 24"><path d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/><text x="8" y="15.5" font-size="6.5" font-weight="bold" font-family="sans-serif">10</text></svg>';
-        let iconForward = '<svg viewBox="0 0 24 24"><path d="M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/><text x="7.5" y="15.5" font-size="6.5" font-weight="bold" font-family="sans-serif">10</text></svg>';
+        let iconBack = '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 5V1L7 6l5 5V7c3.31 0 6 2.69 6 6s-2.69 6-6 6-6-2.69-6-6H4c0 4.42 3.58 8 8 8s8-3.58 8-8-3.58-8-8-8z"/><text x="8" y="15.5" font-size="6.5" font-weight="bold" font-family="sans-serif">10</text></svg>';
+        let iconForward = '<svg viewBox="0 0 24 24"><path fill="currentColor" d="M12 5V1l5 5-5 5V7c-3.31 0-6 2.69-6 6s2.69 6 6 6 6-2.69 6-6h2c0 4.42-3.58 8-8 8s-8-3.58-8-8 3.58-8 8-8z"/><text x="7.5" y="15.5" font-size="6.5" font-weight="bold" font-family="sans-serif">10</text></svg>';
 
         Lampa.Player.listener.follow('start', function(){
             setTimeout(function(){
@@ -86,24 +84,28 @@
                 let center = panel.find('.player-panel__center');
                 if(!center.length) return;
 
-                if(!center.find('.player-panel__skip-back').length){
+                let backBtn = center.find('.player-panel__skip-back');
+                if(!backBtn.length){
                     let playpause = center.find('.player-panel__playpause');
                     playpause.before('<div class="player-panel__skip-back button selector">' + iconBack + '<div class="tooltip">-' + SKIP_SECONDS + ' сек</div></div>');
+                    backBtn = center.find('.player-panel__skip-back');
                 }
 
-                if(!center.find('.player-panel__skip-forward').length){
+                let fwdBtn = center.find('.player-panel__skip-forward');
+                if(!fwdBtn.length){
                     let playpause = center.find('.player-panel__playpause');
                     playpause.after('<div class="player-panel__skip-forward button selector">' + iconForward + '<div class="tooltip">+' + SKIP_SECONDS + ' сек</div></div>');
+                    fwdBtn = center.find('.player-panel__skip-forward');
                 }
 
-                panel.find('.player-panel__skip-back').off('hover:enter').on('hover:enter', function(){
+                backBtn.off('hover:enter').on('hover:enter', function(){
                     let vid = Lampa.PlayerVideo.video();
                     if(vid && vid.duration){
                         Lampa.PlayerVideo.to(Math.max(0, vid.currentTime - SKIP_SECONDS));
                     }
                 });
 
-                panel.find('.player-panel__skip-forward').off('hover:enter').on('hover:enter', function(){
+                fwdBtn.off('hover:enter').on('hover:enter', function(){
                     let vid = Lampa.PlayerVideo.video();
                     if(vid && vid.duration){
                         Lampa.PlayerVideo.to(Math.min(vid.duration, vid.currentTime + SKIP_SECONDS));
